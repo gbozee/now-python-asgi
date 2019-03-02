@@ -28,7 +28,7 @@ This configuration is doing a few things in the `"builds"` part:
 1. `"src": "index.py"`
    This tells Now that there is one entrypoint to build for. `index.py` is a
    file we'll create shortly.
-2. `use": "@ardent-labs/now-python-wsgi"`
+2. `"use": "@ardent-labs/now-python-wsgi"`
    Tell Now to use this builder when deploying your application
 3. `"config": { "maxLambdaSize": "15mb" }`
    Bump up the maximum size of the built application to accommodate some larger
