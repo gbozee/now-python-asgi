@@ -1,0 +1,30 @@
+{
+  "name": "@ardent-labs/now-python-wsgi",
+  "version": "0.0.1",
+  "description": "Python builder for WSGI applications on Zeit Now",
+  "main": "index.js",
+  "repository": "https://github.com/ardent-co/now-python-wsgi.git",
+  "author": "Ardent Labs <ardentlabs@protonmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "execa": "^1.0.0",
+    "fs.promised": "^3.0.0",
+    "node-fetch": "^2.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "scripts": {
+    "lint": "eslint . && flake8 .",
+    "test": "pytest ."
+  }
+}

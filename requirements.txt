@@ -1,0 +1,3 @@
+# Requirements for ./now_handler.py
+
+Werkzeug >=0.14,<1
