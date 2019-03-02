@@ -1,6 +1,10 @@
 # now-python-wsgi
 *A Now builder for Python WSGI applications*
 
+[![NPM version](https://img.shields.io/npm/v/@ardent-labs/now-python-wsgi.svg)](https://www.npmjs.com/package/@ardent-labs/now-python-wsgi)
+[![Build Status](https://travis-ci.org/ardent-co/now-python-wsgi.svg?branch=master)](https://travis-ci.org/ardent-co/now-python-wsgi)
+[![License](https://img.shields.io/npm/l/@ardent-labs/now-python-wsgi.svg)](https://github.com/ardent-co/now-python-wsgi/blob/master/LICENSE)
+
 ## Quickstart
 
 If you have an existing WSGI app, getting this builder to work for you is a
