@@ -47,9 +47,7 @@ def all_casings(input_string):
 
 
 def handler(app, lambda_event, context):
-    print(lambda_event)
     event = json.loads(lambda_event['body'])
-    print(event)
 
     headers = Headers(event.get('headers', None))
 
