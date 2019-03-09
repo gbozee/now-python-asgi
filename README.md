@@ -76,18 +76,45 @@ $ now
 ```
 
 
+## Requirements
+
+Your project may optionally include a `requirements.txt` file to declare any
+dependencies. If you do include a requirements file, `Werkzeug` must appear as
+a dependency, e.g.:
+
+```
+# requirements.txt
+Werkzeug >=0.14,<1
+```
+
+If no `requirements.txt` file is included, then the builder will install
+`Werkzeug` to ensure handler dependencies are met.
+
+
+## Configuration options
+
+### `runtime`
+
+Select the lambda runtime. Defaults to `python3.6`.
+```json
+{
+    "builds": [{
+        "config": { "runtime": "python3.6" }
+    }]
+}
+```
+
+
 ## Additional considerations
 
-### Requirements & runtime
+### Lambda environment limitations
 
-At the time of writing, Zeit Now runs on AWS Lambda in the python 3.6 runtime.
-This has a number of implications on what libaries will be available to you,
-notably:
+At the time of writing, Zeit Now runs on AWS Lambda. This has a number of
+implications on what libaries will be available to you, notably:
 
 - PostgreSQL, so psycopg2 won't work out of the box
 - MySQL, so MySQL adapters won't work out of the box either
 - Sqlite, so the built-in Sqlite adapter won't be available
-- Python <3.6, so python 2 code will need an update
 
 
 ## Contributing

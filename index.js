@@ -6,65 +6,50 @@ const download = require('@now/build-utils/fs/download.js'); // eslint-disable-l
 const glob = require('@now/build-utils/fs/glob.js'); // eslint-disable-line import/no-extraneous-dependencies
 const { createLambda } = require('@now/build-utils/lambda.js'); // eslint-disable-line import/no-extraneous-dependencies
 
-const downloadAndInstallPip = require('./download-and-install-pip');
+const pip = require('./pip');
+const log = require('./log');
 
-async function pipInstall(pipPath, srcDir, ...args) {
-  console.log(`running "pip install -t ${srcDir} ${args.join(' ')}"...`);
-  try {
-    await execa(pipPath, ['install', '-t', srcDir, ...args], {
-      stdio: 'inherit',
-    });
-  } catch (err) {
-    console.log(`failed to run "pip install -t ${srcDir} ${args.join(' ')}"`);
-    throw err;
-  }
-}
 
 exports.config = {
   maxLambdaSize: '5mb',
 };
 
-exports.build = async ({ files, entrypoint }) => {
-  console.log('downloading files...');
 
+exports.build = async ({ files, entrypoint, config }) => {
+  log.title('Starting build');
+
+  const systemReleaseContents = await readFile(
+    path.join('/etc', 'system-release'),
+    'utf8',
+  );
+  log.info(`Build AMI verson: ${systemReleaseContents.trim()}`);
+
+  const pythonVersion = await execa('python3', ['--version']);
+  log.info(`Build python version: ${pythonVersion.stdout}`);
+  log.info(`Lambda runtime: ${(config.runtime || 'python3.6 (default)')}`);
+
+  log.heading('Downloading project');
   const srcDir = await getWritableDirectory();
 
   // eslint-disable-next-line no-param-reassign
   files = await download(files, srcDir);
 
-  // this is where `pip` will be installed to
-  // we need it to be under `/tmp`
+  log.heading('Preparing python');
   const pyUserBase = await getWritableDirectory();
   process.env.PYTHONUSERBASE = pyUserBase;
+  const pipPath = await pip.downloadAndInstallPip();
 
-  const pipPath = await downloadAndInstallPip();
+  log.heading('Installing project requirements');
+  const requirementsTxtPath = pip.findRequirements(entrypoint, files);
+  await pip.install(pipPath, srcDir, '-r', requirementsTxtPath);
 
-  console.log('installing handler requirements');
-  await pipInstall(pipPath, srcDir, '-r',
-    path.join(__dirname, 'requirements.txt'));
-
-  const entryDirectory = path.dirname(entrypoint);
-  const requirementsTxt = path.join(entryDirectory, 'requirements.txt');
-
-  if (files[requirementsTxt]) {
-    console.log('found local "requirements.txt"');
-
-    const requirementsTxtPath = files[requirementsTxt].fsPath;
-    await pipInstall(pipPath, srcDir, '-r', requirementsTxtPath);
-  } else if (files['requirements.txt']) {
-    console.log('found global "requirements.txt"');
-
-    const requirementsTxtPath = files['requirements.txt'].fsPath;
-    await pipInstall(pipPath, srcDir, '-r', requirementsTxtPath);
-  }
-
+  log.heading('Preparing lambda bundle');
   const originalNowHandlerPyContents = await readFile(
     path.join(__dirname, 'now_python_wsgi', 'handler.py'),
     'utf8',
   );
-  // will be used on `from $here import handler`
-  // for example, `from api.users import handler`
-  console.log('entrypoint is', entrypoint);
+
+  log.info(`Entrypoint is ${entrypoint}`);
   const userHandlerFilePath = entrypoint
     .replace(/\//g, '.')
     .replace(/\.py$/, '');
@@ -73,8 +58,6 @@ exports.build = async ({ files, entrypoint }) => {
     userHandlerFilePath,
   );
 
-  // in order to allow the user to have `server.py`, we need our `server.py` to be called
-  // somethig else
   const nowHandlerPyFilename = 'now__handler__python';
 
   await writeFile(
@@ -85,9 +68,11 @@ exports.build = async ({ files, entrypoint }) => {
   const lambda = await createLambda({
     files: await glob('**', srcDir),
     handler: `${nowHandlerPyFilename}.now_handler`,
-    runtime: 'python3.6',
+    runtime: `${config.runtime || 'python3.6'}`,
     environment: {},
   });
+
+  log.title('Done!');
 
   return {
     [entrypoint]: lambda,
