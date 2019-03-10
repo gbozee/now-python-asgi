@@ -22,7 +22,7 @@ exports.build = async ({ files, entrypoint, config }) => {
     path.join('/etc', 'system-release'),
     'utf8',
   );
-  log.info(`Build AMI verson: ${systemReleaseContents.trim()}`);
+  log.info(`Build AMI version: ${systemReleaseContents.trim()}`);
 
   const pythonVersion = await execa('python3', ['--version']);
   log.info(`Build python version: ${pythonVersion.stdout}`);
