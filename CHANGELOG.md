@@ -1,6 +1,17 @@
 # Changelog
 
 
+## UNRELEASED
+
+### Changed
+- Handler is now installed as a python package instead of being copied into the
+   project source.
+- Querystring handling has been corrected.
+- Empty return body handling has been patched to match Now's requirement of a
+   `body` object on the response. An empty body is returned if no body is
+   supplied by the application.
+
+
 ## [1.0.4] - 2019-03-13 - Ensure logging configuration
 
 ### Added
