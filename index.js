@@ -17,12 +17,6 @@ exports.config = {
 
 exports.build = async ({ files, entrypoint, config }) => {
   log.title('Starting build');
-
-  // config.wsgiApplication must be set
-  if (config.wsgiApplication === null) {
-    throw new Error('config.wsgiApplication must be set');
-  }
-
   const systemReleaseContents = await readFile(
     path.join('/etc', 'system-release'),
     'utf8',
@@ -30,9 +24,14 @@ exports.build = async ({ files, entrypoint, config }) => {
   log.info(`Build AMI version: ${systemReleaseContents.trim()}`);
 
   const pythonVersion = await execa('python3', ['--version']);
+  const runtime = config.runtime || 'python3.6';
   log.info(`Build python version: ${pythonVersion.stdout}`);
-  log.info(`Lambda runtime: ${(config.runtime || 'python3.6 (default)')}`);
-  log.info(`WSGI application: ${config.wsgiApplication}`);
+  log.info(`Lambda runtime: ${runtime}`);
+
+  const wsgiMod = entrypoint.split('.').shift().replace(/\//g, '.');
+  const wsgiApplicationName = config.wsgiApplicationName || 'application';
+  const wsgiApplication = `${wsgiMod}.${wsgiApplicationName}`;
+  log.info(`WSGI application: ${wsgiApplication}`);
 
   log.heading('Downloading project');
   const srcDir = await getWritableDirectory();
@@ -55,14 +54,13 @@ exports.build = async ({ files, entrypoint, config }) => {
   }
 
   log.heading('Preparing lambda bundle');
-  log.info(`Entrypoint is ${entrypoint}`);
 
   const lambda = await createLambda({
     files: await glob('**', srcDir),
     handler: 'now_python_wsgi.now_handler',
     runtime: `${config.runtime || 'python3.6'}`,
     environment: {
-      WSGI_APPLICATION: config.wsgiApplication,
+      WSGI_APPLICATION: `${wsgiApplication}`,
     },
   });
 

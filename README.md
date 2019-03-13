@@ -56,12 +56,9 @@ from django_app.wsgi import application
 Look at your framework documentation for help getting access to the WSGI
 application.
 
-If the WSGI instance isn't named `application` you'll need adjust the import so
-the builder can find it when your project is being deployed. E.g.:
-
-```python
-from my_app.wsgi import app as application
-```
+If the WSGI instance isn't named `application` you can set the
+`wsgiApplicationName` configuration option to match your application's name (see
+the configuration section below).
 
 
 ### 3. Deploy!
@@ -100,6 +97,19 @@ Select the lambda runtime. Defaults to `python3.6`.
 {
     "builds": [{
         "config": { "runtime": "python3.6" }
+    }]
+}
+```
+
+
+### `wsgiApplicationName`
+
+Select the WSGI application to run from your entrypoint. Defaults to
+`application`.
+```json
+{
+    "builds": [{
+        "config": { "wsgiApplicationName": "application" }
     }]
 }
 ```
