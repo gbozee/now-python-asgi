@@ -1,5 +1,19 @@
 # Changelog
 
+
+## [1.0.4] - 2019-03-13 - Ensure logging configuration
+
+### Added
+- Logging is now configured with `logging.basicConfig()` in `handler.py` to
+   ensure logging is initialized at the module level.
+
+
+## [1.0.3] - 2019-03-10
+
+### Changed
+- Fixed typo in `index.js` which was appearing in logs
+
+
 ## [1.0.2] - 2019-03-10 - Selectable runtime
 
 ### Added
@@ -13,7 +27,7 @@
 
 ### Removed
 - No longer installs `Werkzeug` every time. Projects will need to include
-   `Werkzeug` as a dependency in their project `requirements.txt`. If a 
+   `Werkzeug` as a dependency in their project `requirements.txt`. If a
    `requirements.txt` file is not found, the builder will install `Werkzeug`
    assuming the project has no other dependencies.
 
@@ -34,5 +48,7 @@ We're just getting started. This establishes a tidy repository ready for the
 world.
 
 
+[1.0.4]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.0...v1.0.1

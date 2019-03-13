@@ -9,11 +9,16 @@ License: MIT
 
 import base64
 import json
+import logging
 import sys
 from werkzeug.datastructures import Headers
 from werkzeug.wrappers import Response
 from werkzeug._compat import (BytesIO, string_types, to_bytes,
                               wsgi_encoding_dance)
+
+
+# Set up logging
+logging.basicConfig()
 
 
 # List of MIME types that should not be base64 encoded. MIME types within
