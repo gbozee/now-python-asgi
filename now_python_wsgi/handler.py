@@ -10,16 +10,27 @@ License: MIT
 import base64
 import json
 import logging
+from importlib import import_module
+import os
 import sys
+
 from werkzeug.datastructures import Headers
 from werkzeug.wrappers import Response
 from werkzeug._compat import (BytesIO, string_types, to_bytes,
                               wsgi_encoding_dance)
 
+if sys.version_info[0] < 3:
+    from urllib import urlparse
+else:
+    from urllib.parse import urlparse
+
 
 # Set up logging
+root = logging.getLogger()
+if root.handlers:
+    for handler in root.handlers:
+        root.removeHandler(handler)
 logging.basicConfig()
-
 
 # List of MIME types that should not be base64 encoded. MIME types within
 # `text/*` are included by default.
@@ -53,10 +64,8 @@ def all_casings(input_string):
 
 def handler(app, lambda_event, context):
     event = json.loads(lambda_event['body'])
-
     headers = Headers(event.get('headers', None))
-
-    path_info = event['path']
+    parsed_url = urlparse(event['path'])
 
     body = event.get('body', '')
     if event.get('isBase64Encoded', False):
@@ -67,9 +76,11 @@ def handler(app, lambda_event, context):
     environ = {
         'CONTENT_LENGTH': str(len(body)),
         'CONTENT_TYPE': headers.get('Content-Type', ''),
-        'PATH_INFO': path_info,
+        'PATH_INFO': parsed_url.path,
+        'QUERY_STRING': parsed_url.query,
         'REMOTE_ADDR': event.get('x-real-ip', ''),
         'REQUEST_METHOD': event['method'],
+        'SCRIPT_NAME': '',
         'SERVER_NAME': headers.get('Host', 'lambda'),
         'SERVER_PORT': headers.get('X-Forwarded-Port', '80'),
         'SERVER_PROTOCOL': 'HTTP/1.1',
@@ -108,7 +119,8 @@ def handler(app, lambda_event, context):
 
     returndict = {
         'statusCode': response.status_code,
-        'headers': dict(new_headers)
+        'headers': dict(new_headers),
+        'body': '',
     }
 
     if response.data:
@@ -127,5 +139,11 @@ def handler(app, lambda_event, context):
 
 
 def now_handler(event, context):
-    from __NOW_HANDLER_FILENAME import application
+    wsgi_app_data = os.environ.get('WSGI_APPLICATION').split('.')
+    wsgi_module_name = '.'.join(wsgi_app_data[:-1])
+    wsgi_app_name = wsgi_app_data[-1]
+
+    wsgi_module = import_module(wsgi_module_name)
+    application = getattr(wsgi_module, wsgi_app_name)
+
     return handler(application, event, context)
