@@ -1,7 +1,7 @@
 # Changelog
 
 
-## UNRELEASED
+## [1.0.5] - 2019-03-13 - Fixes for querystrings and empty response bodies
 
 ### Changed
 - Handler is now installed as a python package instead of being copied into the
@@ -59,6 +59,7 @@ We're just getting started. This establishes a tidy repository ready for the
 world.
 
 
+[1.0.5]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/ardent-co/now-python-wsgi/compare/v1.0.1...v1.0.2
