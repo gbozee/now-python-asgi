@@ -1,6 +1,6 @@
 {
   "name": "@ardent-labs/now-python-wsgi",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Python builder for WSGI applications on Zeit Now",
   "main": "index.js",
   "repository": "https://github.com/ardent-co/now-python-wsgi.git",
