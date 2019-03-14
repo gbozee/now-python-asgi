@@ -117,6 +117,47 @@ Select the WSGI application to run from your entrypoint. Defaults to
 
 ## Additional considerations
 
+### Routing
+
+You'll likely want all requests arriving at your deployment url to be routed to
+your application. You can do this by adding a route rewrite to the Now
+configuration:
+```json
+{
+    "version": 2,
+    "name": "python-wsgi-app",
+    "builds": [{
+        "src": "index.py",
+        "use": "@ardent-labs/now-python-wsgi"
+    }],
+    "routes" : [{
+        "src" : "/(.*)", "dest":"/"
+    }]
+}
+```
+
+### Avoiding the `index.py` file
+
+If having an extra file in your project is troublesome or seems unecessary, it's
+also possible to configure Now to use your application directly, without passing
+it through `index.py`.
+
+If your WSGI application lives in `now_app/wsgi.py` and is named `application`,
+then you can configure it as the entrypoint and adjust routes accordingly:
+```json
+{
+    "version": 2,
+    "name": "python-wsgi-app",
+    "builds": [{
+        "src": "now_app/wsgi.py",
+        "use": "@ardent-labs/now-python-wsgi"
+    }],
+    "routes" : [{
+        "src" : "/(.*)", "dest":"/now_app/wsgi.py"
+    }]
+}
+```
+
 ### Lambda environment limitations
 
 At the time of writing, Zeit Now runs on AWS Lambda. This has a number of
