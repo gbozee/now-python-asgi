@@ -20,9 +20,9 @@ from werkzeug._compat import (BytesIO, string_types, to_bytes,
                               wsgi_encoding_dance)
 
 if sys.version_info[0] < 3:
-    from urllib import urlparse
+    from urllib import urlparse, unquote
 else:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, unquote
 
 
 # Set up logging
@@ -63,6 +63,7 @@ def all_casings(input_string):
 
 
 def handler(app, lambda_event, context):
+
     event = json.loads(lambda_event['body'])
     headers = Headers(event.get('headers', None))
     parsed_url = urlparse(event['path'])
@@ -79,7 +80,7 @@ def handler(app, lambda_event, context):
         'CONTENT_LENGTH': str(len(body)),
         'CONTENT_TYPE': headers.get('Content-Type', ''),
         'PATH_INFO': parsed_url.path,
-        'QUERY_STRING': parsed_url.query,
+        'QUERY_STRING': unquote(parsed_url.query),
         'REMOTE_ADDR': event.get('x-real-ip', ''),
         'REQUEST_METHOD': event['method'],
         'SCRIPT_NAME': '',
@@ -107,21 +108,21 @@ def handler(app, lambda_event, context):
 
     response = Response.from_app(app, environ)
 
-    # If there are multiple Set-Cookie headers, create case-mutated variations
-    # in order to pass them through APIGW. This is a hack that's currently
-    # needed. See: https://github.com/logandk/serverless-wsgi/issues/11
-    # Source: https://github.com/Miserlou/Zappa/blob/master/zappa/middleware.py
-    new_headers = [x for x in response.headers if x[0] != 'Set-Cookie']
-    cookie_headers = [x for x in response.headers if x[0] == 'Set-Cookie']
-    if len(cookie_headers) > 1:
-        for header, new_name in zip(cookie_headers, all_casings('Set-Cookie')):
-            new_headers.append((new_name, header[1]))
-    elif len(cookie_headers) == 1:
-        new_headers.extend(cookie_headers)
+    # Handle multi-value headers
+    headers = {}
+    for key, value in response.headers:
+        if key in headers:
+            current_value = headers[key]
+            if isinstance(current_value, list):
+                headers[key] += [value]
+            else:
+                headers[key] = [current_value, value]
+        else:
+            headers[key] = value
 
     returndict = {
         'statusCode': response.status_code,
-        'headers': dict(new_headers),
+        'headers': headers,
         'body': '',
     }
 
@@ -131,11 +132,10 @@ def handler(app, lambda_event, context):
             mimetype.startswith('text/') or mimetype in TEXT_MIME_TYPES
         ) and not response.headers.get('Content-Encoding', ''):
             returndict['body'] = response.get_data(as_text=True)
-            returndict['isBase64Encoded'] = False
         else:
             returndict['body'] = base64.b64encode(response.data)\
                                        .decode('utf-8')
-            returndict['isBase64Encoded'] = True
+            returndict['encoding'] = 'base64'
 
     return returndict
 

@@ -1,6 +1,16 @@
 # Changelog
 
 
+## UNRELEASED
+
+### Changed
+- Fixed url unquoting of query strings in the handler
+- Fixed base64 encoding of responses in the handler (now passing `encoding` in
+   the return dictionary).
+- Fixed multi-value cookie handling (now passing multi-value cookies as a list
+   of values for each key).
+
+
 ## [1.0.6] - 2019-03-14 - Fixes for base64 encoded bodies
 
 ### Changed
