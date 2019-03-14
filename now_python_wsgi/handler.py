@@ -68,9 +68,11 @@ def handler(app, lambda_event, context):
     parsed_url = urlparse(event['path'])
 
     body = event.get('body', '')
-    if event.get('isBase64Encoded', False):
+    encoding = event.get('encoding', None)
+
+    if encoding == 'base64':
         body = base64.b64decode(body)
-    if isinstance(body, string_types):
+    else:
         body = to_bytes(body, charset='utf-8')
 
     environ = {
