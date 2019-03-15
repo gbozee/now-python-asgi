@@ -1,8 +1,11 @@
 import json
+import base64
+import pytest
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import PlainTextResponse
 
-from werkzeug.wrappers import Request, Response
-
-from now_python_wsgi import handler
+from now_python_asgi import handler
 
 
 get_request_event = {
@@ -40,12 +43,13 @@ get_request_event = {
 }
 
 
-@Request.application
-def application(request):
-    return Response('Success!')
-
-
 def test_now_handler_get_request():
+    application = Starlette()
+
+    @application.route("/")
+    def homepage(request):
+        return PlainTextResponse('Success!')
+
     response = handler(application, get_request_event, None)
     assert response['statusCode'] == 200
     assert 'headers' in response

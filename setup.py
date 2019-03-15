@@ -12,12 +12,11 @@ with open('package.json') as f:
 """A barebones setup for tests
 """
 setup(
-    name='now-python-wsgi',
+    name='now-python-asgi',
     version=version,
     packages=[
-        'now_python_wsgi'
+        'now_python_asgi'
     ],
     install_requires=[
-        'Werkzeug==0.14.1',
     ]
 )

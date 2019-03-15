@@ -24,14 +24,14 @@ exports.build = async ({ files, entrypoint, config }) => {
   log.info(`Build AMI version: ${systemReleaseContents.trim()}`);
 
   const pythonVersion = await execa('python3', ['--version']);
-  const runtime = config.runtime || 'python3.6';
+  const runtime = config.runtime || 'python3.7';
   log.info(`Build python version: ${pythonVersion.stdout}`);
   log.info(`Lambda runtime: ${runtime}`);
 
   const wsgiMod = entrypoint.split('.').shift().replace(/\//g, '.');
   const wsgiApplicationName = config.wsgiApplicationName || 'application';
   const wsgiApplication = `${wsgiMod}.${wsgiApplicationName}`;
-  log.info(`WSGI application: ${wsgiApplication}`);
+  log.info(`ASGI application: ${wsgiApplication}`);
 
   log.heading('Downloading project');
   const srcDir = await getWritableDirectory();
@@ -57,10 +57,10 @@ exports.build = async ({ files, entrypoint, config }) => {
 
   const lambda = await createLambda({
     files: await glob('**', srcDir),
-    handler: 'now_python_wsgi.now_handler',
-    runtime: `${config.runtime || 'python3.6'}`,
+    handler: 'now_python_asgi.now_handler',
+    runtime: `${config.runtime || 'python3.7'}`,
     environment: {
-      WSGI_APPLICATION: `${wsgiApplication}`,
+      ASGI_APPLICATION: `${wsgiApplication}`,
     },
   });
 

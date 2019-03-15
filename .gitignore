@@ -1,1 +1,12 @@
 node_modules/
+venv/*
+*.pyc
+custom.sh
+__pycache__
+.vscode/*
+*.egg-info/
+*.cache/
+tags
+*.coverage
+*.pytest_cache
+startup_p.sh
