@@ -39,6 +39,7 @@ exports.build = async ({ files, entrypoint, config }) => {
 
   // eslint-disable-next-line no-param-reassign
   files = await download(files, srcDir);
+  console.log(files)
 
   log.heading('Preparing python');
   const pyUserBase = await getWritableDirectory();
