@@ -34,7 +34,8 @@ exports.build = async ({ files, entrypoint, config }) => {
   log.info(`ASGI application: ${wsgiApplication}`);
 
   log.heading('Downloading project');
-  const srcDir = await getWritableDirectory();
+  const srcDir = await now();
+  log.heading(srcDir)
 
   // eslint-disable-next-line no-param-reassign
   files = await download(files, srcDir);
