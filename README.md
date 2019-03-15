@@ -1,9 +1,9 @@
-# now-python-wsgi
-*A Now builder for Python WSGI applications*
+# now-python-asgi
+*A Now builder for Python ASGI applications*
 
-[![NPM version](https://img.shields.io/npm/v/@ardent-labs/now-python-wsgi.svg)](https://www.npmjs.com/package/@ardent-labs/now-python-wsgi)
+<!-- [![NPM version](https://img.shields.io/npm/v/@ardent-labs/now-python-wsgi.svg)](https://www.npmjs.com/package/@ardent-labs/now-python-wsgi)
 [![Build Status](https://travis-ci.org/ardent-co/now-python-wsgi.svg?branch=master)](https://travis-ci.org/ardent-co/now-python-wsgi)
-[![License](https://img.shields.io/npm/l/@ardent-labs/now-python-wsgi.svg)](https://github.com/ardent-co/now-python-wsgi/blob/master/LICENSE)
+[![License](https://img.shields.io/npm/l/@ardent-labs/now-python-wsgi.svg)](https://github.com/ardent-co/now-python-wsgi/blob/master/LICENSE) -->
 
 ## Quickstart
 
@@ -18,10 +18,10 @@ Add a `now.json` file to the root of your application:
 ```json
 {
     "version": 2,
-    "name": "python-wsgi-app",
+    "name": "python-asgi-app",
     "builds": [{
         "src": "index.py",
-        "use": "@ardent-labs/now-python-wsgi",
+        "use": "@gbozee/now-python-asgi",
         "config": { "maxLambdaSize": "15mb" }
     }]
 }
@@ -47,16 +47,21 @@ available an object named `application` that is an instance of your WSGI
 application. E.g.:
 
 ```python
-# For a Dango app
-from django_app.wsgi import application
+# For a sample Starlette app
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+
+application = Starlette()
+
+@application.route('/')
+async def homepage(request):
+    return JSONResponse({'hello': 'world'})
+
 # Replace `django_app` with the appropriate name to point towards your project's
 # wsgi.py file
 ```
 
-Look at your framework documentation for help getting access to the WSGI
-application.
-
-If the WSGI instance isn't named `application` you can set the
+If the ASGI instance isn't named `application` you can set the
 `wsgiApplicationName` configuration option to match your application's name (see
 the configuration section below).
 
@@ -67,7 +72,7 @@ That's it, you're ready to go:
 
 ```
 $ now
-> Deploying python-wsgi-app
+> Deploying python-asgi-app
 ...
 > Success! Deployment ready [57s]
 ```
@@ -76,27 +81,18 @@ $ now
 ## Requirements
 
 Your project may optionally include a `requirements.txt` file to declare any
-dependencies. If you do include a requirements file, `Werkzeug` must appear as
-a dependency, e.g.:
-
-```
-# requirements.txt
-Werkzeug >=0.14,<1
-```
-
-If no `requirements.txt` file is included, then the builder will install
-`Werkzeug` to ensure handler dependencies are met.
+dependencies. 
 
 
 ## Configuration options
 
 ### `runtime`
 
-Select the lambda runtime. Defaults to `python3.6`.
+Select the lambda runtime. Defaults to `python3.7`.
 ```json
 {
     "builds": [{
-        "config": { "runtime": "python3.6" }
+        "config": { "runtime": "python3.7" }
     }]
 }
 ```
@@ -109,7 +105,7 @@ Select the WSGI application to run from your entrypoint. Defaults to
 ```json
 {
     "builds": [{
-        "config": { "wsgiApplicationName": "application" }
+        "config": { "asgiApplicationName": "application" }
     }]
 }
 ```
@@ -125,10 +121,10 @@ configuration:
 ```json
 {
     "version": 2,
-    "name": "python-wsgi-app",
+    "name": "python-asgi-app",
     "builds": [{
         "src": "index.py",
-        "use": "@ardent-labs/now-python-wsgi"
+        "use": "@gbozee/now-python-asgi"
     }],
     "routes" : [{
         "src" : "/(.*)", "dest":"/"
@@ -147,13 +143,13 @@ then you can configure it as the entrypoint and adjust routes accordingly:
 ```json
 {
     "version": 2,
-    "name": "python-wsgi-app",
+    "name": "python-asgi-app",
     "builds": [{
-        "src": "now_app/wsgi.py",
-        "use": "@ardent-labs/now-python-wsgi"
+        "src": "now_app/asgi.py",
+        "use": "@gbozee/now-python-asgi"
     }],
     "routes" : [{
-        "src" : "/(.*)", "dest":"/now_app/wsgi.py"
+        "src" : "/(.*)", "dest":"/now_app/asgi.py"
     }]
 }
 ```
@@ -179,11 +175,5 @@ implications on what libaries will be available to you, notably:
 
 This implementation draws upon work from:
 
-- [@clement](https://github.com/rclement) on
-   [now-builders/#163](https://github.com/zeit/now-builders/pull/163)
-- [serverless](https://github.com/serverless/serverless) and
-   [serverless-wsgi](https://github.com/logandk/serverless-wsgi)
-- [@sisp](https://github.com/sisp) on
-   [now-builders/#95](https://github.com/zeit/now-builders/pull/95)
-- [Zappa](https://github.com/Miserlou/Zappa) by
-   [@miserlou](https://github.com/Miserlou)
+- [@ardent-co](https://github.com/ardent-co) on 
+  [now-python-wsgi](https://github.com/ardent-co/now-python-wsgi)

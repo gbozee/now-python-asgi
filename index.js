@@ -29,7 +29,7 @@ exports.build = async ({ files, entrypoint, config }) => {
   log.info(`Lambda runtime: ${runtime}`);
 
   const wsgiMod = entrypoint.split('.').shift().replace(/\//g, '.');
-  const wsgiApplicationName = config.wsgiApplicationName || 'application';
+  const wsgiApplicationName = config.asgiApplicationName || 'application';
   const wsgiApplication = `${wsgiMod}.${wsgiApplicationName}`;
   log.info(`ASGI application: ${wsgiApplication}`);
 
