@@ -175,5 +175,6 @@ implications on what libaries will be available to you, notably:
 
 This implementation draws upon work from:
 
+- [@erm](https://github.com/erm) on [mangum](https://github.com/erm/mangum)
 - [@ardent-co](https://github.com/ardent-co) on 
   [now-python-wsgi](https://github.com/ardent-co/now-python-wsgi)
