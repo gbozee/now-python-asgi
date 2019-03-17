@@ -195,7 +195,7 @@ class NowMangum(Mangum):
 
         body = event.get('body', '')
         encoding = event.get('encoding', None)
-        scheme = headers.get("X-Forwarded-Proto", "http")
+        scheme = headers.get("x-forwarded-proto", "http")
         server_addr = headers.get("Host", None)
         if server_addr is not None:
             if ":" not in server_addr:
