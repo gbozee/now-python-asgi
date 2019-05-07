@@ -161,7 +161,6 @@ implications on what libaries will be available to you, notably:
 
 - PostgreSQL, so psycopg2 won't work out of the box
 - MySQL, so MySQL adapters won't work out of the box either
-- Sqlite, so the built-in Sqlite adapter won't be available
 
 
 ## Contributing
