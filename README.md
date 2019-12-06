@@ -26,6 +26,7 @@ Add a `now.json` file to the root of your application:
     }]
 }
 ```
+**NB: For ASGI2 support, Use `@gbozee/now-python-asgi@1.0.4`**
 
 This configuration is doing a few things in the `"builds"` part:
 
@@ -161,7 +162,6 @@ implications on what libaries will be available to you, notably:
 
 - PostgreSQL, so psycopg2 won't work out of the box
 - MySQL, so MySQL adapters won't work out of the box either
-
 
 ## Contributing
 
