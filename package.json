@@ -4,7 +4,7 @@
   "description": "Python builder for ASGI applications on Zeit Now",
   "main": "index.js",
   "repository": "https://github.com/gbozee/now-python-asgi.git",
-  "author": "Biola <gbozee@gmail.com>",
+  "author": "Biola <b33sama@gmail.com>",
   "license": "MIT",
   "private": false,
   "dependencies": {
