@@ -35,8 +35,9 @@ class ASGICycle:
         loop = asyncio.new_event_loop()
         self.app_queue = asyncio.Queue(loop=loop)
         self.put_message({"type": "http.request", "body": body, "more_body": False})
-        asgi_instance = app(self.scope)
-        asgi_task = loop.create_task(asgi_instance(self.receive, self.send))
+        # asgi_instance = app(self.scope)
+        # asgi_task = loop.create_task(asgi_instance(self.receive, self.send))
+        asgi_task = loop.create_task(app(self.scope,self.receive, self.send))
         loop.run_until_complete(asgi_task)
         return self.response
 
