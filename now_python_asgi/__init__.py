@@ -1,1 +1,1 @@
-from .handler import handler, now_handler # noqa
+from .handler import handler, now_handler, NowMangum  # noqa

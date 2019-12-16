@@ -1,6 +1,6 @@
 {
   "name": "@gbozee/now-python-asgi",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Python builder for ASGI applications on Zeit Now",
   "main": "index.js",
   "repository": "https://github.com/gbozee/now-python-asgi.git",
