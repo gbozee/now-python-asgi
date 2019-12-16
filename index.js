@@ -48,7 +48,6 @@ exports.build = async ({ workPath, files, entrypoint, config }) => {
   const pipPath = await pip.downloadAndInstallPip();
 
   log.heading('Installing handler');
-  await pip.install(pipPath, workPath, 'mangum');
   await pip.install(pipPath, srcDir, __dirname);
 
   log.heading('Installing project requirements');
