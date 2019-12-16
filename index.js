@@ -9,13 +9,11 @@ const { createLambda } = require('@now/build-utils/lambda.js'); // eslint-disabl
 const pip = require('./pip');
 const log = require('./log');
 
-
 exports.config = {
-  maxLambdaSize: '5mb',
+  maxLambdaSize: '5mb'
 };
 
-
-exports.build = async ({ files, entrypoint, config }) => {
+exports.build = async ({ workPath, files, entrypoint, config }) => {
   log.title('Starting build');
   // const systemReleaseContents = await readFile(
   //   path.join('/etc', 'system-release'),
@@ -28,18 +26,21 @@ exports.build = async ({ files, entrypoint, config }) => {
   log.info(`Build python version: ${pythonVersion.stdout}`);
   log.info(`Lambda runtime: ${runtime}`);
 
-  const wsgiMod = entrypoint.split('.').shift().replace(/\//g, '.');
+  const wsgiMod = entrypoint
+    .split('.')
+    .shift()
+    .replace(/\//g, '.');
   const wsgiApplicationName = config.asgiApplicationName || 'application';
   const wsgiApplication = `${wsgiMod}.${wsgiApplicationName}`;
   log.info(`ASGI application: ${wsgiApplication}`);
 
   log.heading('Downloading project');
   const srcDir = await getWritableDirectory();
-  log.heading(srcDir)
+  log.heading(srcDir);
 
   // eslint-disable-next-line no-param-reassign
   files = await download(files, srcDir);
-  console.log(files)
+  console.log(files);
 
   log.heading('Preparing python');
   const pyUserBase = await getWritableDirectory();
@@ -47,7 +48,7 @@ exports.build = async ({ files, entrypoint, config }) => {
   const pipPath = await pip.downloadAndInstallPip();
 
   log.heading('Installing handler');
-  await pipInstall(pipPath, workPath, 'mangum');
+  await pip.install(pipPath, workPath, 'mangum');
   await pip.install(pipPath, srcDir, __dirname);
 
   log.heading('Installing project requirements');
@@ -63,13 +64,13 @@ exports.build = async ({ files, entrypoint, config }) => {
     handler: 'now_python_asgi.now_handler',
     runtime: `${config.runtime || 'python3.6'}`,
     environment: {
-      ASGI_APPLICATION: `${wsgiApplication}`,
-    },
+      ASGI_APPLICATION: `${wsgiApplication}`
+    }
   });
 
   log.title('Done!');
 
   return {
-    [entrypoint]: lambda,
+    [entrypoint]: lambda
   };
 };

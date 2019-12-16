@@ -9,8 +9,8 @@ from typing import Any
 import json
 import logging
 from urllib.parse import urlparse, unquote
-from mangum import Mangum
-from mangum.adapter import ASGIHTTPCycle
+from .mangum import Mangum
+from .mangum.adapter import ASGIHTTPCycle
 
 
 # class ASGICycleState(enum.Enum):
