@@ -1,6 +1,6 @@
 {
   "name": "@gbozee/now-python-asgi",
-  "version": "1.0.10",
+  "version": "1.0.18",
   "description": "Python builder for ASGI applications on Zeit Now",
   "main": "index.js",
   "repository": "https://github.com/gbozee/now-python-asgi.git",
@@ -12,19 +12,10 @@
     "fs.promised": "^3.0.0",
     "node-fetch": "^2.2.0"
   },
+  "scripts": {},
   "devDependencies": {
-    "eslint": "^5.15.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "pre-commit": "^1.2.2"
-  },
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
-  "scripts": {
-    "lint": "eslint . && flake8 .",
-    "test": "pytest ."
+    "@types/execa": "^0.9.0",
+    "execa": "^1.0.0",
+    "typescript": "3.5.2"
   }
 }
